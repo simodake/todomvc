@@ -7,14 +7,10 @@
 	<section class="main">
 		<input id="toggle-all" type="checkbox" class="toggle-all"> <label for="toggle-all">すべて終わらせる</label> 
 		<ul class="todo-list">
-		<li class="todo">
-			<div class="view"><input type="checkbox" class="toggle"> <label>TodoMVCを完成させる</label> <button class="destroy"></button></div>
+		<li class="todo" v-for="todo in todos" v-bind:key="todo.index" v-bind:class="{completed: todo.completed}">
+			<div class="view"><input type="checkbox" class="toggle" v-model="todo.completed"> <label>{{ todo.title }}</label> <button class="destroy"></button></div>
 			<input type="text" class="edit">
-			</li>
-		<li class="todo completed">
-			<div class="view"><input type="checkbox" class="toggle" checked="checked"> <label>Vueの使い方を学ぶ</label> <button class="destroy"></button></div>
-			<input type="text" class="edit">
-			</li>
+		</li>
 		</ul>
 	</section>
 	<footer class="footer">
@@ -34,7 +30,21 @@
 
 <script>
 export default {
-	name: 'app'
+	name: 'app',
+	data() {
+		return {
+			todos: [
+				{
+					title: 'TodoMVCを完成させる',
+					completed: false
+				},
+				{
+					title: 'Vueの使い方を学ぶ',
+					completed: true
+				},
+			]
+		}
+	}
 }
 </script>
 
