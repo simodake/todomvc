@@ -5,7 +5,7 @@
 		<input autofocus="autofocus" autocomplete="off" placeholder="やること書いて" class="new-todo" v-on:keyup.enter="add">
 	</header>
 	<section class="main">
-		<input id="toggle-all" type="checkbox" class="toggle-all"> <label for="toggle-all">すべて終わらせる</label> 
+		<input id="toggle-all" type="checkbox" class="toggle-all" v-on:click='checkAll'> <label for="toggle-all">すべて終わらせる</label> 
 		<ul class="todo-list">
 		<li class="todo" v-for="todo in filteredTodos" v-bind:key="todo.index" v-bind:class="{completed: todo.completed}">
 			<div class="view"><input type="checkbox" class="toggle" v-model="todo.completed"> <label>{{ todo.title }}</label> <button class="destroy" v-on:click="remove(todo)"></button></div>
@@ -21,7 +21,7 @@
 			<li><a href="#/active" v-bind:class="{selected: tab=='active'}" v-on:click="tab='active'">やってる</a></li>
 			<li><a href="#/completed" v-bind:class="{selected: tab=='completed'}" v-on:click="tab='completed'">終わった</a></li>
 		</ul>
-		<button class="clear-completed" style="">
+		<button class="clear-completed" v-on:click="clearCompleted">
 		終わったタスクを削除
 		</button>
 	</footer>
@@ -58,6 +58,12 @@ export default {
 		},
 		remove: function(todo) {
 			this.todos = this.todos.filter(t => t !== todo)
+		},
+		checkAll: function(event) {
+			this.todos.forEach(t => t.completed = event.target.checked)
+		},
+		clearCompleted: function() {
+			this.todos = this.todos.filter(t => !t.completed)
 		}
 	},
 	computed: {
