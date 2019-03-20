@@ -7,9 +7,13 @@
 	<section class="main">
 		<input id="toggle-all" type="checkbox" class="toggle-all" v-on:click='checkAll'> <label for="toggle-all">すべて終わらせる</label> 
 		<ul class="todo-list">
-		<li class="todo" v-for="todo in filteredTodos" v-bind:key="todo.index" v-bind:class="{completed: todo.completed}">
-			<div class="view"><input type="checkbox" class="toggle" v-model="todo.completed"> <label>{{ todo.title }}</label> <button class="destroy" v-on:click="remove(todo)"></button></div>
-			<input type="text" class="edit">
+		<li class="todo" v-for="todo in filteredTodos" v-bind:key="todo.index" v-bind:class="{completed: todo.completed, editing: todo.editing}">
+			<div class="view">
+				<input type="checkbox" class="toggle" v-model="todo.completed">
+				<label v-on:dblclick="todo.editing=true">{{ todo.title }}</label>
+				<button class="destroy" v-on:click="remove(todo)"></button>
+			</div>
+			<input type="text" class="edit" v-model="todo.title" v-on:blur="todo.editing=false">
 		</li>
 		</ul>
 	</section>
@@ -29,20 +33,12 @@
 </template>
 
 <script>
+const LOCAL_STORAGE_KEY = 'todos'
 export default {
 	name: 'app',
 	data() {
 		return {
-			todos: [
-				{
-					title: 'TodoMVCを完成させる',
-					completed: false
-				},
-				{
-					title: 'Vueの使い方を学ぶ',
-					completed: true
-				},
-			],
+			todos: localStorage.getItem('todos') ? JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) : [],
 			tab: 'all'
 		}
 	},
@@ -51,19 +47,27 @@ export default {
 			this.todos.push(
 				{
 					title: event.target.value,
-					completed: false
+					completed: false,
+					editing: false
 				}
 			)
 			event.target.value = ''
+			this.update()
 		},
 		remove: function(todo) {
 			this.todos = this.todos.filter(t => t !== todo)
+			this.update()
 		},
 		checkAll: function(event) {
 			this.todos.forEach(t => t.completed = event.target.checked)
+			this.update()
 		},
 		clearCompleted: function() {
 			this.todos = this.todos.filter(t => !t.completed)
+			this.update()
+		},
+		update() {
+			localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.todos))
 		}
 	},
 	computed: {
