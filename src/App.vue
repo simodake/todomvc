@@ -8,7 +8,7 @@
 		<input id="toggle-all" type="checkbox" class="toggle-all"> <label for="toggle-all">すべて終わらせる</label> 
 		<ul class="todo-list">
 		<li class="todo" v-for="todo in todos" v-bind:key="todo.index" v-bind:class="{completed: todo.completed}">
-			<div class="view"><input type="checkbox" class="toggle" v-model="todo.completed"> <label>{{ todo.title }}</label> <button class="destroy"></button></div>
+			<div class="view"><input type="checkbox" class="toggle" v-model="todo.completed"> <label>{{ todo.title }}</label> <button class="destroy" v-on:click="remove(todo)"></button></div>
 			<input type="text" class="edit">
 		</li>
 		</ul>
@@ -53,6 +53,10 @@ export default {
 					completed: false
 				}
 			)
+			event.target.value = ''
+		},
+		remove: function(todo) {
+			this.todos = this.todos.filter(t => t !== todo)
 		}
 	}
 }
