@@ -7,19 +7,19 @@
 	<section class="main">
 		<input id="toggle-all" type="checkbox" class="toggle-all"> <label for="toggle-all">すべて終わらせる</label> 
 		<ul class="todo-list">
-		<li class="todo" v-for="todo in todos" v-bind:key="todo.index" v-bind:class="{completed: todo.completed}">
+		<li class="todo" v-for="todo in filteredTodos" v-bind:key="todo.index" v-bind:class="{completed: todo.completed}">
 			<div class="view"><input type="checkbox" class="toggle" v-model="todo.completed"> <label>{{ todo.title }}</label> <button class="destroy" v-on:click="remove(todo)"></button></div>
 			<input type="text" class="edit">
 		</li>
 		</ul>
 	</section>
 	<footer class="footer">
-		<span class="todo-count"><strong>{{todos.length}}</strong>件
+		<span class="todo-count"><strong>{{filteredTodos.length}}</strong>件
 		</span> 
 		<ul class="filters">
-			<li><a href="#/all" class="selected">すべて</a></li>
-			<li><a href="#/active" class="">やってる</a></li>
-			<li><a href="#/completed" class="">終わった</a></li>
+			<li><a href="#/all" v-bind:class="{selected: tab=='all'}" v-on:click="tab='all'">すべて</a></li>
+			<li><a href="#/active" v-bind:class="{selected: tab=='active'}" v-on:click="tab='active'">やってる</a></li>
+			<li><a href="#/completed" v-bind:class="{selected: tab=='completed'}" v-on:click="tab='completed'">終わった</a></li>
 		</ul>
 		<button class="clear-completed" style="">
 		終わったタスクを削除
@@ -42,7 +42,8 @@ export default {
 					title: 'Vueの使い方を学ぶ',
 					completed: true
 				},
-			]
+			],
+			tab: 'all'
 		}
 	},
 	methods: {
@@ -57,6 +58,18 @@ export default {
 		},
 		remove: function(todo) {
 			this.todos = this.todos.filter(t => t !== todo)
+		}
+	},
+	computed: {
+		filteredTodos: function() {
+			switch(this.tab) {
+				case 'active':
+					return this.todos.filter(t => !t.completed)
+				case 'completed':
+					return this.todos.filter(t => t.completed)
+				default:
+					return this.todos
+			}
 		}
 	}
 }
