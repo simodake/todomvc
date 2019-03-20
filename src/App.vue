@@ -2,7 +2,7 @@
 <section class="todoapp">
 	<header class="header">
 		<h1>やること一覧</h1>
-		<input autofocus="autofocus" autocomplete="off" placeholder="やること書いて" class="new-todo">
+		<input autofocus="autofocus" autocomplete="off" placeholder="やること書いて" class="new-todo" v-on:keyup.enter="add">
 	</header>
 	<section class="main">
 		<input id="toggle-all" type="checkbox" class="toggle-all"> <label for="toggle-all">すべて終わらせる</label> 
@@ -14,7 +14,7 @@
 		</ul>
 	</section>
 	<footer class="footer">
-		<span class="todo-count"><strong>2</strong>件
+		<span class="todo-count"><strong>{{todos.length}}</strong>件
 		</span> 
 		<ul class="filters">
 			<li><a href="#/all" class="selected">すべて</a></li>
@@ -43,6 +43,16 @@ export default {
 					completed: true
 				},
 			]
+		}
+	},
+	methods: {
+		add: function(event) {
+			this.todos.push(
+				{
+					title: event.target.value,
+					completed: false
+				}
+			)
 		}
 	}
 }
